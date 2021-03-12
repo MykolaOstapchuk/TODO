@@ -38,6 +38,7 @@ public class MainActivityFragment extends Fragment {
     private String title;
     private String description;
     private Button addNoteBtn;
+    private Button deleteAllNoteBtn;
 
     public MainActivityFragment() { }
 
@@ -63,6 +64,7 @@ public class MainActivityFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.noteRecyclerView);
         addNoteBtn = view.findViewById(R.id.addNoteBtn);
+        deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         insertList = new ArrayList<>();
         toDoAdapter = new ToDoAdapter(getContext(), list);
@@ -89,6 +91,16 @@ public class MainActivityFragment extends Fragment {
                 addNoteFragment.openNoteFragment();
             }
         });
+
+        deleteAllNoteBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                list.clear();
+                toDoAdapter.updateData(list);
+                recyclerView.setAdapter(toDoAdapter);
+            }
+        });
+
 
         super.onViewCreated(view, savedInstanceState);
     }
