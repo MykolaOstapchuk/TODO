@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.AddNoteFragment">
+
+    <EditText
+        android:id="@+id/titleTxt"
+        android:hint="Title"
+        android:text=""
+        android:textColorHint="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <EditText
+        android:gravity="left"
+        android:text=""
+        android:layout_below="@+id/titleTxt"
+        android:id="@+id/descriptionTxt"
+        android:hint="Description"
+        android:textColorHint="@android:color/darker_gray"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        />
+
+    <Button
+        android:layout_marginLeft="30dp"
+        android:text="Confirm"
+        android:id="@+id/confirmBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:layout_marginLeft="30dp"
+        android:text="Cancel"
+        android:id="@+id/cancelBtn"
+        android:layout_toRightOf="@+id/confirmBtn"
+        android:layout_alignParentBottom="true"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

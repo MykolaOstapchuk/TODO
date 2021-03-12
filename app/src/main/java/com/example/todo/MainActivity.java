@@ -1,15 +1,14 @@
 package com.example.todo;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import com.example.todo.Fragments.AddNoteFragment;
 import com.example.todo.Fragments.MainActivityFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements  MainActivityFragment.openAddNoteFragment , AddNoteFragment.noteFragment{
 
     private Fragment cuFragment;
 
@@ -22,6 +21,40 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_page, cuFragment)
+                .addToBackStack("MainPageFragment")
                 .commit();
+    }
+
+    @Override
+    public void openNoteFragment() {
+        getSupportFragmentManager().popBackStack();
+
+        cuFragment = new AddNoteFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_page, cuFragment)
+                .addToBackStack("AddNoteFragment")
+                .commit();
+    }
+
+    @Override
+    public void addNote(boolean check, String title, String decription) {
+        getSupportFragmentManager().popBackStack();
+
+        if(check == false) {
+            cuFragment = new MainActivityFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_page, cuFragment)
+                    .addToBackStack("MainActivityFragment")
+                    .commit();
+        }else {
+            cuFragment = new MainActivityFragment(title,decription);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_page, cuFragment)
+                    .addToBackStack("MainActivityFragment")
+                    .commit();
+        }
     }
 }

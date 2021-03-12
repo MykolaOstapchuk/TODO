@@ -3,10 +3,20 @@ package com.example.todo;
 public class Note {
     String title;
     String description;
+    boolean checkClick;
 
     public Note(String title, String description) {
         this.title = title;
         this.description = description;
+        this.checkClick  = false;
+    }
+
+    public boolean isCheckClick() {
+        return checkClick;
+    }
+
+    public void setCheckClick(boolean checkClick) {
+        this.checkClick = checkClick;
     }
 
     public String getTitle() {
