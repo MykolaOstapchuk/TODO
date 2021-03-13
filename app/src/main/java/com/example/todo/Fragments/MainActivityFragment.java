@@ -1,5 +1,6 @@
 package com.example.todo.Fragments;
 
+import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +41,7 @@ public class MainActivityFragment extends Fragment {
     private String description;
     private Button addNoteBtn;
     private Button deleteAllNoteBtn;
+
 
     public MainActivityFragment() { }
 
@@ -73,6 +76,8 @@ public class MainActivityFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(toDoAdapter);
 
+        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
+
         if(addNewElement){
             addNewElement=false;
             insertList.clear();
@@ -96,8 +101,7 @@ public class MainActivityFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 list.clear();
-                toDoAdapter.updateData(list);
-                recyclerView.setAdapter(toDoAdapter);
+                recyclerView.setAdapter(null);
             }
         });
 
@@ -108,18 +112,31 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        list = new ArrayList<>() ;
-//        list.add(new Note("kola","work"));
-//        list.add(new Note("dima","does not work"));
-//        list.add(new Note("kiril","work hard"));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_main_activity, container, false);
     }
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+            list.remove(viewHolder.getAdapterPosition());
+            toDoAdapter.notifyDataSetChanged();
+
+//            if(list.size()==0){
+//                recyclerView.setAdapter(null);
+//            }else {
+//                toDoAdapter.updateData(list);
+//            }
+        }
+    };
 }
