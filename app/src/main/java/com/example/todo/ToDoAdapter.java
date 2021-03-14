@@ -2,6 +2,7 @@ package com.example.todo;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,69 +23,71 @@ import java.util.List;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> {
 
 
-//    public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
-//        @Override
-//        public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
-//            return  TextUtils.equals(oldItem.title,newItem.title);
-//        }
-//
-//        @Override
-//        public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
-//            return oldItem.title.equals(newItem.title);
-//        }
-//    };
+    public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return  TextUtils.equals(oldItem.title,newItem.title);
+        }
 
-    //private AsyncListDiffer<Note> mDiffer;
+        @Override
+        public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.title.equals(newItem.title);
+        }
+    };
 
-    //@Override
-    //public int getItemCount(){
-    //    return mDiffer.getCurrentList().size();
-    //}
-
+    private AsyncListDiffer<Note> mDiffer;
 
     @Override
-    public int getItemCount() {
-        return workList.size();
+    public int getItemCount(){
+        return mDiffer.getCurrentList().size();
     }
+
+
+//    @Override
+//    public int getItemCount() {
+//        return workList.size();
+//    }
 
     List<Note> workList = new ArrayList<>();
     Context context;
 
     public ToDoAdapter(Context ct, List<Note> ls){
         context = ct;
-        //mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
-        workList = ls;
+        mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
+        //workList = ls;
     }
 
-    public void setWorkList(List<Note> newList){
-        this.workList=newList;
-    }
+
+
     public void insertData(List<Note> insertList){
         //This function will add new data to RecyclerView
-        MyDiffUtillCallback diffUtillCallback = new MyDiffUtillCallback(workList,insertList);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtillCallback);
+        //MyDiffUtillCallback diffUtillCallback = new MyDiffUtillCallback(workList,insertList);
+        //DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtillCallback);
+        //workList.addAll(insertList);
+        //diffResult.dispatchUpdatesTo(this);
 
+        workList.clear();
         workList.addAll(insertList);
-        diffResult.dispatchUpdatesTo(this);
+
+        mDiffer.submitList(workList);
     }
 
 
 
     public void updateData(List<Note> newList){
         //This function will update data to RecyclerView
-        MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+        //MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
+        //DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
 
         //Toast.makeText(context,"WorkListSize= "+workList.size()+ " /n NewListSize= "+newList.size(),Toast.LENGTH_LONG).show();
 
         workList.clear();
         workList.addAll(newList);
 
-
-        //mDiffer.submitList(workList);
+        mDiffer.submitList(workList);
 
         //Toast.makeText(context,"WorkListSize= "+workList.size(),Toast.LENGTH_LONG).show();
-        diffResult.dispatchUpdatesTo(this);
+        //diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -98,18 +102,24 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     }
 
 
-    //public void submitList(List<Note> data) {
-    //    mDiffer.submitList(data);
-    //}
+    public void submitList(List<Note> data) {
+        workList.clear();
+        workList.addAll(data);
+        mDiffer.submitList(data);
+    }
 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        //Note note = mDiffer.getCurrentList().get(position);
+        Note note = mDiffer.getCurrentList().get(position);
 
-        String temp = workList.get(position).title;
-        boolean help= workList.get(position).isCheckClick();
+        String temp = note.title;
+        boolean help = note.checkClick;
+
+
+//        String temp = workList.get(position).title;
+//        boolean help= workList.get(position).isCheckClick();
 
         holder.tekst1.setText(temp);
         holder.tempcheck.setChecked(help);

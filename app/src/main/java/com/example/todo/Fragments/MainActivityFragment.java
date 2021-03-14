@@ -86,8 +86,9 @@ public class MainActivityFragment extends Fragment {
             insertList.add(new Note(title,description));
             list.clear();
             list.addAll(insertList);
-            //toDoAdapter.submitList(insertList);
-            toDoAdapter.updateData(insertList);
+            //toDoAdapter.updateData(insertList);
+            toDoAdapter.submitList(insertList);
+            //toDoAdapter.updateData(insertList);
             recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
         }
 
@@ -133,8 +134,9 @@ public class MainActivityFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
 
-            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
+            toDoAdapter.submitList(list);
+            //toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            //toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
         }
     };
 }
