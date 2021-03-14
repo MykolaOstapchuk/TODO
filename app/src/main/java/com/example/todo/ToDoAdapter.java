@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
@@ -25,6 +26,12 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public ToDoAdapter(Context ct, List<Note> ls){
         context = ct;
         workList = ls;
+    }
+
+    public void deleteSelected(int position){
+        if(workList.get(position).isCheckClick())
+
+        workList.remove(position);
     }
 
     public void insertData(List<Note> insertList){
@@ -63,7 +70,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
 
         if(help){
             holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }
+        }else
+            holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
