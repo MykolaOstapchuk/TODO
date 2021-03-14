@@ -1,5 +1,7 @@
 package com.example.todo.Util;
 
+import android.text.TextUtils;
+
 import androidx.recyclerview.widget.DiffUtil;
 
 import com.example.todo.Note;
@@ -18,12 +20,12 @@ public class MyDiffUtillCallback extends DiffUtil.Callback {
 
     @Override
     public int getOldListSize() {
-        return oldList.size();
+        return oldList==null?0:oldList.size();
     }
 
     @Override
     public int getNewListSize() {
-        return newList.size();
+        return newList==null?0:newList.size();
     }
 
     @Override
@@ -33,6 +35,6 @@ public class MyDiffUtillCallback extends DiffUtil.Callback {
 
     @Override
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-        return oldList.get(oldItemPosition).getTitle().equals(newList.get(newItemPosition).getTitle());
+        return TextUtils.equals(oldList.get(oldItemPosition).getTitle(),newList.get(newItemPosition).getTitle());
     }
 }

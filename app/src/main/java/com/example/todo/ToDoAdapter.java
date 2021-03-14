@@ -1,7 +1,9 @@
 package com.example.todo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,27 +12,54 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.Util.MyDiffUtillCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> {
 
-    List<Note> workList;
+    private Activity mActivity;
+    public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
+        @Override
+        public boolean areItemsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return  TextUtils.equals(oldItem.title,newItem.title);
+        }
+
+        @Override
+        public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
+            return oldItem.title.equals(newItem.title);
+        }
+    };
+
+    private AsyncListDiffer<Note> mDiffer;
+    // = new AsyncListDiffer<Note>(this,DIFF_UTIL);
+
+    @Override
+    public int getItemCount(){
+        return mDiffer.getCurrentList().size();
+    }
+
+
+
+    static List<Note> workList = new ArrayList<>();
     Context context;
     CheckBox checkBox;
 
-    public ToDoAdapter(Context ct, List<Note> ls){
+    public ToDoAdapter(Context ct, List<Note> ls, Activity ac){
         context = ct;
-        workList = ls;
+        this.mActivity = ac;
+        mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
+        //workList = ls;
     }
 
     public void deleteSelected(int position){
         if(workList.get(position).isCheckClick())
-
         workList.remove(position);
     }
 
@@ -43,14 +72,27 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         diffResult.dispatchUpdatesTo(this);
     }
 
+
+
     public void updateData(List<Note> newList){
         //This function will update data to RecyclerView
-        MyDiffUtillCallback diffUtillCallback = new MyDiffUtillCallback(workList,newList);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtillCallback);
+        //MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
+
+
+
+        //DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback,true);
+
+        //Toast.makeText(context,"WorkListSize= "+workList.size()+ " /n NewListSize= "+newList.size(),Toast.LENGTH_LONG).show();
 
         workList.clear();
         workList.addAll(newList);
-        diffResult.dispatchUpdatesTo(this);
+
+
+        mDiffer.submitList(workList);
+
+
+        Toast.makeText(context,"WorkListSize= "+workList.size(),Toast.LENGTH_LONG).show();
+        //diffResult.dispatchUpdatesTo(this);
     }
     @NonNull
     @Override
@@ -60,41 +102,65 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         return new MyViewHolder(view);
     }
 
+
+    public void submitList(List<Note> data) {
+        mDiffer.submitList(data);
+    }
+
+
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        String temp = workList.get(position).title;
-        boolean help= workList.get(position).isCheckClick();
+
+        Note note = mDiffer.getCurrentList().get(position);
+
+        String temp = note.title;
+        boolean help= note.isCheckClick();
 
         holder.tekst1.setText(temp);
         holder.tempcheck.setChecked(help);
+
 
         if(help){
             holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         }else
             holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
+
+
+            Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (this){
+                    mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (note.isCheckClick()) {
+                                note.setCheckClick(false);
+                                holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                            } else {
+                                note.setCheckClick(true);
+                                holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                            }
+                        }
+                    });
+                }
+            }
+            });
+
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(workList.get(position).isCheckClick())
+                if(t.getState() == Thread.State.NEW)
+                    t.start();
+                else
                 {
-                    workList.get(position).setCheckClick(false);
-                    holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                }
-                else {
-                    workList.get(position).setCheckClick(true);
-                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    t.run();
                 }
             }
         });
+
     }
 
-
-
-    @Override
-    public int getItemCount() {
-        return workList.size();
-    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder{
         TextView tekst1;
