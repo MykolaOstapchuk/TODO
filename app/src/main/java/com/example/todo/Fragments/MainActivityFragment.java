@@ -1,15 +1,12 @@
 package com.example.todo.Fragments;
 
-import android.app.Activity;
-import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ActionMenuView;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +41,6 @@ public class MainActivityFragment extends Fragment {
     private String description;
     private Button addNoteBtn;
     private Button deleteAllNoteBtn;
-    private static Activity activity;
 
 
     public MainActivityFragment() { }
@@ -59,7 +55,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        activity = (Activity) context;
         try {
             addNoteFragment = (openAddNoteFragment) context;
         } catch (ClassCastException ex) {
@@ -75,8 +70,7 @@ public class MainActivityFragment extends Fragment {
         deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         insertList = new ArrayList<>();
-        toDoAdapter = new ToDoAdapter(getContext(), list,activity);
-
+        toDoAdapter = new ToDoAdapter(getContext(), list);
 
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -92,9 +86,9 @@ public class MainActivityFragment extends Fragment {
             insertList.add(new Note(title,description));
             list.clear();
             list.addAll(insertList);
-            toDoAdapter.submitList(insertList);
-            //toDoAdapter.updateData(insertList);
-            recyclerView.smoothScrollToPosition(toDoAdapter.getItemCount()-1); //Auto scroll to last item
+            //toDoAdapter.submitList(insertList);
+            toDoAdapter.updateData(insertList);
+            recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
         }
 
 
@@ -139,19 +133,8 @@ public class MainActivityFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
 
-            //Toast.makeText(getContext(),"Enter to delete element"+list.size(),Toast.LENGTH_LONG).show();
-            //toDoAdapter.updateData(list);
-
-            toDoAdapter.submitList(list);
-
-
-            //toDoAdapter.notifyDataSetChanged();
-
-//            if(list.size()==0){
-//                recyclerView.setAdapter(null);
-//            }else {
-//                toDoAdapter.updateData(list);
-//            }
+            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
         }
     };
 }
