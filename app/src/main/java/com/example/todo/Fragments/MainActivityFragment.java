@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,7 +42,8 @@ public class MainActivityFragment extends Fragment {
     private Button deleteAllNoteBtn;
 
 
-    public MainActivityFragment() { }
+
+    public MainActivityFragment() {this.addNewElement=false;}
 
     public MainActivityFragment(String title, String description){
         this.title        =title;
@@ -81,16 +81,27 @@ public class MainActivityFragment extends Fragment {
 
         if(addNewElement){
             addNewElement=false;
-            insertList.clear();
-            insertList.addAll(list);
-            insertList.add(new Note(title,description));
-            list.clear();
-            list.addAll(insertList);
-            //toDoAdapter.updateData(insertList);
-            toDoAdapter.submitList(insertList);
+            //insertList.clear();
+            //insertList.addAll(list);
+            //insertList.add(new Note(title,description));
+            //list.clear();
+            //list.addAll(insertList);
+
+            list.add(new Note(title,description));
+            //toDoAdapter.submitList(list);
+
+
             //toDoAdapter.updateData(insertList);
             recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
+            //toDoAdapter.submitList(insertList);
+            //toDoAdapter.updateData(insertList);
+
         }
+
+        if(list.size()!=0){
+            toDoAdapter.submitList(list);
+        }
+
 
 
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +118,6 @@ public class MainActivityFragment extends Fragment {
                 recyclerView.setAdapter(null);
             }
         });
-
-
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -134,9 +143,8 @@ public class MainActivityFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
 
-            toDoAdapter.submitList(list);
-            //toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            //toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
+            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
         }
     };
 }

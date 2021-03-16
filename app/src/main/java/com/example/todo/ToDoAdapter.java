@@ -54,40 +54,35 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public ToDoAdapter(Context ct, List<Note> ls){
         context = ct;
         mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
-        //workList = ls;
+        workList = ls;
     }
 
-
-
-    public void insertData(List<Note> insertList){
-        //This function will add new data to RecyclerView
-        //MyDiffUtillCallback diffUtillCallback = new MyDiffUtillCallback(workList,insertList);
-        //DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtillCallback);
-        //workList.addAll(insertList);
-        //diffResult.dispatchUpdatesTo(this);
-
-        workList.clear();
-        workList.addAll(insertList);
-
-        mDiffer.submitList(workList);
+    public ToDoAdapter() {
+        this.mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
     }
 
+    public void submitList(List<Note> data) {
+        mDiffer.submitList(data);
+    }
 
+    public Note getItem(int position) {
+        return mDiffer.getCurrentList().get(position);
+    }
 
     public void updateData(List<Note> newList){
         //This function will update data to RecyclerView
-        //MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
-        //DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+        MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
 
         //Toast.makeText(context,"WorkListSize= "+workList.size()+ " /n NewListSize= "+newList.size(),Toast.LENGTH_LONG).show();
 
         workList.clear();
         workList.addAll(newList);
 
-        mDiffer.submitList(workList);
+        //mDiffer.submitList(workList);
 
         //Toast.makeText(context,"WorkListSize= "+workList.size(),Toast.LENGTH_LONG).show();
-        //diffResult.dispatchUpdatesTo(this);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     @NonNull
@@ -95,52 +90,52 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_todo,parent,false);
-
-
-
         return new MyViewHolder(view);
     }
 
 
-    public void submitList(List<Note> data) {
-        workList.clear();
-        workList.addAll(data);
-        mDiffer.submitList(data);
-    }
+
 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        Note note = mDiffer.getCurrentList().get(position);
-
-        String temp = note.title;
-        boolean help = note.checkClick;
-
-
-//        String temp = workList.get(position).title;
-//        boolean help= workList.get(position).isCheckClick();
-
-        holder.tekst1.setText(temp);
-        holder.tempcheck.setChecked(help);
-
-
-        if(help){
-            holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }else
-            holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-
-
         holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
+                    //mDiffer.getCurrentList().get(position).setCheckClick(true);
+                    //workList.get(position).setCheckClick(true);
                     holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 }else{
+                    //mDiffer.getCurrentList().get(position).setCheckClick(false);
+                    //workList.get(position).setCheckClick(false);
                     holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
             }
         });
+        holder.setData(getItem(position));
+
+        //Note note = mDiffer.getCurrentList().get(position);
+
+        //String temp = note.title;
+        //boolean help = note.checkClick;
+
+
+//        String temp = workList.get(position).title;
+//        boolean help= workList.get(position).isCheckClick();
+//
+//        holder.tekst1.setText(temp);
+//        holder.tempcheck.setChecked(help);
+
+
+//        if(help){
+//            holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+//        }else
+//            holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+
+
     }
 
 
@@ -152,6 +147,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
             super(itemView);
             tekst1   = itemView.findViewById(R.id.noteTitle);
             tempcheck= itemView.findViewById(R.id.checkbox);
+        }
+
+        public void setData(Note note){
+            boolean help = note.checkClick;
+
+            if(help){
+            tekst1.setPaintFlags(tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else
+            tekst1.setPaintFlags(tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+
+            tekst1.setText(note.getTitle());
+            tempcheck.setChecked(note.isCheckClick());
         }
     }
 }
