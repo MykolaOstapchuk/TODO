@@ -1,6 +1,5 @@
 package com.example.todo.Fragments;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.Note;
 import com.example.todo.R;
+import com.example.todo.RecyclerView.SimpleDividerItemDecoration;
 import com.example.todo.ToDoAdapter;
 
 import java.util.ArrayList;
@@ -34,7 +34,6 @@ public class MainActivityFragment extends Fragment {
     private ToDoAdapter toDoAdapter;
 
     private static List<Note> list = new ArrayList<>();
-    private List<Note> insertList;
 
     private boolean addNewElement=false;
     private String title;
@@ -42,15 +41,13 @@ public class MainActivityFragment extends Fragment {
     private Button addNoteBtn;
     private Button deleteAllNoteBtn;
 
-
-    public MainActivityFragment() { }
+    public MainActivityFragment() {this.addNewElement=false;}
 
     public MainActivityFragment(String title, String description){
         this.title        =title;
         this.description  =description;
         this.addNewElement=true;
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -62,33 +59,28 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.noteRecyclerView);
+
         addNoteBtn = view.findViewById(R.id.addNoteBtn);
         deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
-        insertList = new ArrayList<>();
         toDoAdapter = new ToDoAdapter(getContext(), list);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
+
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
         if(addNewElement){
             addNewElement=false;
-            insertList.clear();
-            insertList.addAll(list);
-            insertList.add(new Note(title,description));
-            list.clear();
-            list.addAll(insertList);
-            toDoAdapter.updateData(insertList);
-            recyclerView.smoothScrollToPosition(toDoAdapter.getItemCount()-1); //Auto scroll to last item
+            list.add(new Note(title,description));
+            recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
         }
 
+        if(list.size()!=0){
+            toDoAdapter.submitList(list);
+        }
 
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,8 +96,6 @@ public class MainActivityFragment extends Fragment {
                 recyclerView.setAdapter(null);
             }
         });
-
-
         super.onViewCreated(view, savedInstanceState);
     }
 
@@ -117,8 +107,16 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main_activity, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+
+        recyclerView = rootView.findViewById(R.id.noteRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
+
+        recyclerView.setAdapter(null);
+        return rootView;
     }
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
@@ -130,13 +128,9 @@ public class MainActivityFragment extends Fragment {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
-            toDoAdapter.notifyDataSetChanged();
 
-//            if(list.size()==0){
-//                recyclerView.setAdapter(null);
-//            }else {
-//                toDoAdapter.updateData(list);
-//            }
+            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
         }
     };
 }

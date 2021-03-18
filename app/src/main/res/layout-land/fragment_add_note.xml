@@ -26,8 +26,13 @@
         android:layout_height="200dp"
         />
 
+    <LinearLayout
+        android:layout_below="@+id/descriptionTxt"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <Button
-        android:layout_marginLeft="30dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
         android:text="Confirm"
         android:id="@+id/confirmBtn"
         android:layout_alignParentBottom="true"
@@ -35,12 +40,16 @@
         android:layout_height="wrap_content"/>
 
     <Button
+        android:layout_weight="0.5"
         android:layout_marginLeft="30dp"
         android:text="Cancel"
+        android:layout_gravity="center"
         android:id="@+id/cancelBtn"
         android:layout_toRightOf="@+id/confirmBtn"
         android:layout_alignParentBottom="true"
         android:layout_width="150dp"
         android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
 </RelativeLayout>

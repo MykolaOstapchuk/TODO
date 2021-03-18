@@ -26,9 +26,7 @@ public class AddNoteFragment extends Fragment {
     private EditText title,description;
     private Button   confirm,cancel;
 
-    public AddNoteFragment() {
-        // Required empty public constructor
-    }
+    public AddNoteFragment() { }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -48,7 +46,6 @@ public class AddNoteFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_note, container, false);
     }
 
@@ -66,6 +63,9 @@ public class AddNoteFragment extends Fragment {
                 String tit = title.getText().toString();
                 String des = description.getText().toString();
 
+                tit = tit.replace("\n", "").replace("\r", "");
+                des = des.replace("\n", "").replace("\r", "");
+
                 if(TextUtils.isEmpty(tit)) {
                     title.setError("The item title cannot be empty");
                     return;
@@ -75,6 +75,10 @@ public class AddNoteFragment extends Fragment {
                     return;
                 }
                 else {
+                    if(tit.length() >= 20){
+                        title.setError("The title name should have less than 20 characters");
+                    }
+                    else
                     noteFragment.addNote(true,tit,des);
                 }
             }
