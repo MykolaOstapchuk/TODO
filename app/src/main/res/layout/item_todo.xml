@@ -6,7 +6,9 @@
     android:layout_height="100dp"
     android:background="#6e7c7c"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp">
+    android:padding="16dp"
+    >
+
 
 
     <CheckBox
@@ -40,7 +42,4 @@
         android:layout_toRightOf="@+id/checkbox"
         android:textColor="#c8c6a7"
         tools:ignore="MissingConstraints" />
-
-
-
 </RelativeLayout>

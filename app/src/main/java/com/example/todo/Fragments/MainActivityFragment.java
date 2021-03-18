@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todo.Note;
 import com.example.todo.R;
+import com.example.todo.RecyclerView.SimpleDividerItemDecoration;
 import com.example.todo.ToDoAdapter;
 
 import java.util.ArrayList;
@@ -60,14 +61,13 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        recyclerView = view.findViewById(R.id.noteRecyclerView);
+
         addNoteBtn = view.findViewById(R.id.addNoteBtn);
         deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         toDoAdapter = new ToDoAdapter(getContext(), list);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setHasFixedSize(true);
+
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
@@ -107,7 +107,16 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main_activity, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+
+        recyclerView = rootView.findViewById(R.id.noteRecyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setHasFixedSize(true);
+
+        recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
+
+        recyclerView.setAdapter(null);
+        return rootView;
     }
 
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
