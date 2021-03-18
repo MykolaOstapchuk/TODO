@@ -10,7 +10,6 @@
     tools:context=".Fragments.MainActivityFragment">
 
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:layout_weight="8.5"
         android:layout_width="match_parent"

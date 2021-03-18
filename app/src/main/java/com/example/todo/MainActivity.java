@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements  MainActivityFrag
         cuFragment = new AddNoteFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_page, cuFragment)
+                .replace(R.id.fragment_page, cuFragment)
                 .addToBackStack("AddNoteFragment")
                 .commit();
     }
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements  MainActivityFrag
         }
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.fragment_page, cuFragment)
+                .replace(R.id.fragment_page, cuFragment)
                 .addToBackStack("MainActivityFragment")
                 .commit();
     }

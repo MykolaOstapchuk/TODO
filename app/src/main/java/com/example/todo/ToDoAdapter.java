@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.todo.Util.MyDiffUtillCallback;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> {
 
+    private AsyncListDiffer<Note> mDiffer;
+    private List<Note> workList;
+    private Context context;
 
     public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
         @Override
@@ -35,30 +35,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         }
     };
 
-    private AsyncListDiffer<Note> mDiffer;
-
     @Override
     public int getItemCount(){
         return mDiffer.getCurrentList().size();
     }
 
-
-//    @Override
-//    public int getItemCount() {
-//        return workList.size();
-//    }
-
-    List<Note> workList = new ArrayList<>();
-    Context context;
-
     public ToDoAdapter(Context ct, List<Note> ls){
         context = ct;
         mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
         workList = ls;
-    }
-
-    public ToDoAdapter() {
-        this.mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
     }
 
     public void submitList(List<Note> data) {
@@ -69,22 +54,6 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         return mDiffer.getCurrentList().get(position);
     }
 
-    public void updateData(List<Note> newList){
-        //This function will update data to RecyclerView
-        MyDiffUtillCallback diffUtilCallback = new MyDiffUtillCallback(workList,newList);
-        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
-
-        //Toast.makeText(context,"WorkListSize= "+workList.size()+ " /n NewListSize= "+newList.size(),Toast.LENGTH_LONG).show();
-
-        workList.clear();
-        workList.addAll(newList);
-
-        //mDiffer.submitList(workList);
-
-        //Toast.makeText(context,"WorkListSize= "+workList.size(),Toast.LENGTH_LONG).show();
-        diffResult.dispatchUpdatesTo(this);
-    }
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -93,59 +62,30 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         return new MyViewHolder(view);
     }
 
-
-
-
-
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
         holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    //mDiffer.getCurrentList().get(position).setCheckClick(true);
-                    //workList.get(position).setCheckClick(true);
                     holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 }else{
-                    //mDiffer.getCurrentList().get(position).setCheckClick(false);
-                    //workList.get(position).setCheckClick(false);
                     holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
             }
         });
         holder.setData(getItem(position));
-
-        //Note note = mDiffer.getCurrentList().get(position);
-
-        //String temp = note.title;
-        //boolean help = note.checkClick;
-
-
-//        String temp = workList.get(position).title;
-//        boolean help= workList.get(position).isCheckClick();
-//
-//        holder.tekst1.setText(temp);
-//        holder.tempcheck.setChecked(help);
-
-
-//        if(help){
-//            holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//        }else
-//            holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-
-
-
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder{
-        TextView tekst1;
-        CheckBox tempcheck;
+        private TextView tekst1;
+        private TextView tekst2;
+        private CheckBox tempcheck;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             tekst1   = itemView.findViewById(R.id.noteTitle);
+            tekst2   = itemView.findViewById(R.id.noteDescription);
             tempcheck= itemView.findViewById(R.id.checkbox);
         }
 
@@ -158,6 +98,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
             tekst1.setPaintFlags(tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
 
             tekst1.setText(note.getTitle());
+
+            String desc  = note.getDescription();
+            if(desc.length() >= 40){
+                String upToNCharacters = desc.substring(0, 40);
+                tekst2.setText(upToNCharacters+" ...");
+            }else
+                tekst2.setText(note.getDescription());
             tempcheck.setChecked(note.isCheckClick());
         }
     }

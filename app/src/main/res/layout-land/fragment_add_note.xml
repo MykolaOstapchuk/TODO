@@ -32,7 +32,7 @@
         android:layout_height="match_parent">
     <Button
         android:layout_gravity="center"
-        android:layout_weight="1.0"
+        android:layout_weight="0.5"
         android:text="Confirm"
         android:id="@+id/confirmBtn"
         android:layout_alignParentBottom="true"
@@ -40,7 +40,7 @@
         android:layout_height="wrap_content"/>
 
     <Button
-        android:layout_weight="1.0"
+        android:layout_weight="0.5"
         android:layout_marginLeft="30dp"
         android:text="Cancel"
         android:layout_gravity="center"

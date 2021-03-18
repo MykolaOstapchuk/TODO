@@ -33,15 +33,12 @@ public class MainActivityFragment extends Fragment {
     private ToDoAdapter toDoAdapter;
 
     private static List<Note> list = new ArrayList<>();
-    private List<Note> insertList;
 
     private boolean addNewElement=false;
     private String title;
     private String description;
     private Button addNoteBtn;
     private Button deleteAllNoteBtn;
-
-
 
     public MainActivityFragment() {this.addNewElement=false;}
 
@@ -50,7 +47,6 @@ public class MainActivityFragment extends Fragment {
         this.description  =description;
         this.addNewElement=true;
     }
-
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -62,16 +58,13 @@ public class MainActivityFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         recyclerView = view.findViewById(R.id.noteRecyclerView);
         addNoteBtn = view.findViewById(R.id.addNoteBtn);
         deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
-        insertList = new ArrayList<>();
         toDoAdapter = new ToDoAdapter(getContext(), list);
-
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setHasFixedSize(true);
@@ -81,28 +74,13 @@ public class MainActivityFragment extends Fragment {
 
         if(addNewElement){
             addNewElement=false;
-            //insertList.clear();
-            //insertList.addAll(list);
-            //insertList.add(new Note(title,description));
-            //list.clear();
-            //list.addAll(insertList);
-
             list.add(new Note(title,description));
-            //toDoAdapter.submitList(list);
-
-
-            //toDoAdapter.updateData(insertList);
             recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
-            //toDoAdapter.submitList(insertList);
-            //toDoAdapter.updateData(insertList);
-
         }
 
         if(list.size()!=0){
             toDoAdapter.submitList(list);
         }
-
-
 
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,7 +107,6 @@ public class MainActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main_activity, container, false);
     }
 
