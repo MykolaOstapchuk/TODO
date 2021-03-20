@@ -1,11 +1,13 @@
 package com.example.todo.Fragments;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -34,12 +36,15 @@ public class MainActivityFragment extends Fragment {
     private ToDoAdapter toDoAdapter;
 
     private static List<Note> list = new ArrayList<>();
+    private List<Note> tm = new ArrayList<>();
 
     private boolean addNewElement=false;
+    protected boolean addNewElement2=false;
     private String title;
     private String description;
     private Button addNoteBtn;
     private Button deleteAllNoteBtn;
+    private boolean[] checkedState=new boolean[list.size()];
 
     public MainActivityFragment() {this.addNewElement=false;}
 
@@ -66,8 +71,6 @@ public class MainActivityFragment extends Fragment {
         deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         toDoAdapter = new ToDoAdapter(getContext(), list);
-
-
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
@@ -99,10 +102,11 @@ public class MainActivityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setRetainInstance(true);
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,6 +120,8 @@ public class MainActivityFragment extends Fragment {
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
 
         recyclerView.setAdapter(null);
+
+        //setRetainInstance(true);
         return rootView;
     }
 
@@ -128,6 +134,10 @@ public class MainActivityFragment extends Fragment {
         @Override
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
+
+            //toDoAdapter.submitList(tm);
+            //toDoAdapter.submitList(list);
+            //recyclerView.setAdapter(toDoAdapter);
 
             toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
             toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);

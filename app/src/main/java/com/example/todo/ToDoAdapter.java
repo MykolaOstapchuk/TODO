@@ -9,17 +9,19 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> {
 
-    private AsyncListDiffer<Note> mDiffer;
+    private static AsyncListDiffer<Note> mDiffer;
     private List<Note> workList;
     private Context context;
 
@@ -31,7 +33,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
 
         @Override
         public boolean areContentsTheSame(@NonNull Note oldItem, @NonNull Note newItem) {
-            return oldItem.title.equals(newItem.title);
+            return oldItem.title.equals(newItem.title) && oldItem.description.equals(newItem.description);
         }
     };
 
@@ -43,16 +45,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public ToDoAdapter(Context ct, List<Note> ls){
         context = ct;
         mDiffer = new AsyncListDiffer<Note>(this,DIFF_UTIL);
-        workList = ls;
+        workList = mDiffer.getCurrentList();
     }
 
     public void submitList(List<Note> data) {
+        //mDiffer.submitList(new ArrayList<>());
         mDiffer.submitList(data);
     }
 
     public Note getItem(int position) {
         return mDiffer.getCurrentList().get(position);
     }
+
+
+
 
     @NonNull
     @Override
@@ -67,13 +73,28 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int pos = holder.getAdapterPosition();
+                Toast.makeText(context,"Position of item =" +position+"     pos="+pos,Toast.LENGTH_LONG).show();
                 if(b){
+                    mDiffer.getCurrentList().get(pos).setCheckClick(true);
                     holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 }else{
+                    mDiffer.getCurrentList().get(pos).setCheckClick(false);
                     holder.tekst1.setPaintFlags( holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
             }
         });
+
+//        holder.tempcheck.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//
+//                if(mDiffer.getCurrentList().get(pos).isCheckClick() == false)
+//                    mDiffer.getCurrentList().get(pos).setCheckClick(true);
+//
+//            }
+//        });
         holder.setData(getItem(position));
     }
 
@@ -90,14 +111,16 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         }
 
         public void setData(Note note){
-            boolean help = note.checkClick;
-
-            if(help){
-            tekst1.setPaintFlags(tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            }else
-            tekst1.setPaintFlags(tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            boolean help = note.isCheckClick();
 
             tekst1.setText(note.getTitle());
+            if(help){
+                //tempcheck.setChecked(true);
+                tekst1.setPaintFlags(tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else{
+                //tempcheck.setChecked(false);
+                tekst1.setPaintFlags(tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            }
 
             String desc  = note.getDescription();
             if(desc.length() >= 40){
@@ -105,6 +128,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
                 tekst2.setText(upToNCharacters+" ...");
             }else
                 tekst2.setText(note.getDescription());
+
+
             tempcheck.setChecked(note.isCheckClick());
         }
     }
