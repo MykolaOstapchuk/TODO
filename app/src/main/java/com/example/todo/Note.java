@@ -8,15 +8,6 @@ public class Note {
     public Note(String title, String description) {
         this.title = title;
         this.description = description;
-        this.checkClick  = false;
-    }
-
-    public boolean isCheckClick() {
-        return checkClick;
-    }
-
-    public void setCheckClick(boolean checkClick) {
-        this.checkClick = checkClick;
     }
 
     public String getTitle() {
@@ -33,5 +24,13 @@ public class Note {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public boolean isCheckClick() {
+        return checkClick;
+    }
+
+    public void setCheckClick(boolean checkClick) {
+        this.checkClick = checkClick;
     }
 }

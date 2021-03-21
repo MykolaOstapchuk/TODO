@@ -22,7 +22,6 @@ import com.example.todo.ToDoAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivityFragment extends Fragment {
 
     public interface openAddNoteFragment {
@@ -35,18 +34,18 @@ public class MainActivityFragment extends Fragment {
 
     private static List<Note> list = new ArrayList<>();
 
-    private boolean addNewElement=false;
+    private boolean addNewElement = false;
     private String title;
     private String description;
-    private Button addNoteBtn;
-    private Button deleteAllNoteBtn;
 
-    public MainActivityFragment() {this.addNewElement=false;}
+    public MainActivityFragment() {
+        this.addNewElement = false;
+    }
 
-    public MainActivityFragment(String title, String description){
-        this.title        =title;
-        this.description  =description;
-        this.addNewElement=true;
+    public MainActivityFragment(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.addNewElement = true;
     }
 
     @Override
@@ -62,23 +61,21 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        addNoteBtn = view.findViewById(R.id.addNoteBtn);
-        deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
+        Button addNoteBtn = view.findViewById(R.id.addNoteBtn);
+        Button deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         toDoAdapter = new ToDoAdapter(getContext(), list);
-
-
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
-        if(addNewElement){
-            addNewElement=false;
-            list.add(new Note(title,description));
-            recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
+        if (addNewElement) {
+            addNewElement = false;
+            list.add(new Note(title, description));
+            recyclerView.scrollToPosition(list.size() - 1);
         }
 
-        if(list.size()!=0){
+        if (list.size() != 0) {
             toDoAdapter.submitList(list);
         }
 
@@ -100,11 +97,6 @@ public class MainActivityFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
@@ -116,10 +108,11 @@ public class MainActivityFragment extends Fragment {
         recyclerView.addItemDecoration(new SimpleDividerItemDecoration(getResources()));
 
         recyclerView.setAdapter(null);
+
         return rootView;
     }
 
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -130,7 +123,7 @@ public class MainActivityFragment extends Fragment {
             list.remove(viewHolder.getAdapterPosition());
 
             toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
+            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(), 1);
         }
     };
 }

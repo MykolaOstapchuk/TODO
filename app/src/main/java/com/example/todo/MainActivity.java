@@ -2,13 +2,14 @@ package com.example.todo;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.example.todo.Fragments.AddNoteFragment;
 import com.example.todo.Fragments.MainActivityFragment;
 
-public class MainActivity extends AppCompatActivity implements  MainActivityFragment.openAddNoteFragment , AddNoteFragment.noteFragment{
+public class MainActivity extends AppCompatActivity implements MainActivityFragment.openAddNoteFragment, AddNoteFragment.noteFragment {
 
     private Fragment cuFragment;
 
@@ -17,12 +18,27 @@ public class MainActivity extends AppCompatActivity implements  MainActivityFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        cuFragment = new MainActivityFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_page, cuFragment)
-                .addToBackStack("MainPageFragment")
-                .commit();
+        if (savedInstanceState == null) {
+
+            cuFragment = new MainActivityFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_page, cuFragment)
+                    .addToBackStack("MainPageFragment")
+                    .commit();
+
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState, "startFragment", cuFragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        cuFragment = getSupportFragmentManager().getFragment(savedInstanceState, "startFragment");
     }
 
     @Override
@@ -38,13 +54,13 @@ public class MainActivity extends AppCompatActivity implements  MainActivityFrag
     }
 
     @Override
-    public void addNote(boolean check, String title, String decription) {
+    public void addNote(boolean check, String title, String description) {
         getSupportFragmentManager().popBackStack();
 
-        if(!check) {
+        if (!check) {
             cuFragment = new MainActivityFragment();
-        }else {
-            cuFragment = new MainActivityFragment(title,decription);
+        } else {
+            cuFragment = new MainActivityFragment(title, description);
         }
         getSupportFragmentManager()
                 .beginTransaction()

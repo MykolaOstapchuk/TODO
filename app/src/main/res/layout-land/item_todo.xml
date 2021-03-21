@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="80dp"
     android:background="#6e7c7c"
     android:padding="16dp"
     >
@@ -23,19 +23,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/title"
-        android:textSize="24sp"
+        android:textSize="18sp"
         android:textColor="#c8c6a7"
         android:layout_toEndOf="@+id/checkbox" />
 
     <TextView
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2dp"
         android:layout_below="@+id/noteTitle"
         android:id="@+id/noteDescription"
         android:layout_marginStart="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:text="@string/description"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_toEndOf="@+id/checkbox"
         android:textColor="#c8c6a7"/>
 </RelativeLayout>

@@ -15,32 +15,27 @@ import androidx.fragment.app.Fragment;
 
 import com.example.todo.R;
 
-
 public class AddNoteFragment extends Fragment {
 
     public interface noteFragment {
-        void addNote(boolean check, String title, String decription);
+        void addNote(boolean check, String title, String description);
     }
 
     private noteFragment noteFragment;
-    private EditText title,description;
-    private Button   confirm,cancel;
+    private EditText title, description;
+    private Button cancel;
 
-    public AddNoteFragment() { }
+    public AddNoteFragment() {
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
             noteFragment = (noteFragment) context;
-        }catch (ClassCastException ex) {
+        } catch (ClassCastException ex) {
             throw new ClassCastException(context.toString() + " must implement onSomeEventListener");
         }
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -51,10 +46,10 @@ public class AddNoteFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        title       = view.findViewById(R.id.titleTxt);
+        title = view.findViewById(R.id.titleTxt);
         description = view.findViewById(R.id.descriptionTxt);
-        confirm     = view.findViewById(R.id.confirmBtn);
-        cancel      = view.findViewById(R.id.cancelBtn);
+        Button confirm = view.findViewById(R.id.confirmBtn);
+        cancel = view.findViewById(R.id.cancelBtn);
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,20 +61,15 @@ public class AddNoteFragment extends Fragment {
                 tit = tit.replace("\n", "").replace("\r", "");
                 des = des.replace("\n", "").replace("\r", "");
 
-                if(TextUtils.isEmpty(tit)) {
+                if (TextUtils.isEmpty(tit)) {
                     title.setError("The item title cannot be empty");
-                    return;
-                }
-                else if(TextUtils.isEmpty(des)) {
+                } else if (TextUtils.isEmpty(des)) {
                     description.setError("The item description cannot be empty");
-                    return;
-                }
-                else {
-                    if(tit.length() >= 20){
+                } else {
+                    if (tit.length() >= 20) {
                         title.setError("The title name should have less than 20 characters");
-                    }
-                    else
-                    noteFragment.addNote(true,tit,des);
+                    } else
+                        noteFragment.addNote(true, tit, des);
                 }
             }
         });
@@ -87,7 +77,7 @@ public class AddNoteFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noteFragment.addNote(false,"","");
+                noteFragment.addNote(false, "", "");
             }
         });
 
