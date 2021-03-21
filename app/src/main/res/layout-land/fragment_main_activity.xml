@@ -11,7 +11,7 @@
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_weight="9.0"
+        android:layout_weight="9.5"
         android:layout_width="match_parent"
         android:id="@+id/noteRecyclerView"
         android:clipToPadding="false"
@@ -29,7 +29,7 @@
         android:id="@+id/addNoteBtn"
         android:background="@color/colorPrimary"
         android:layout_width="150dp"
-        android:layout_height="60dp"
+        android:layout_height="40dp"
         android:text="@string/add_note" />
 
         <Button
@@ -38,7 +38,7 @@
             android:id="@+id/deleteAllNoteBtn"
             android:background="@color/colorPrimary"
             android:layout_width="150dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:text="@string/delete_all_note" />
 
 

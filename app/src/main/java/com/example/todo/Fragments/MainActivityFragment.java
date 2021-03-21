@@ -1,13 +1,11 @@
 package com.example.todo.Fragments;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,7 +22,6 @@ import com.example.todo.ToDoAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class MainActivityFragment extends Fragment {
 
     public interface openAddNoteFragment {
@@ -36,22 +33,19 @@ public class MainActivityFragment extends Fragment {
     private ToDoAdapter toDoAdapter;
 
     private static List<Note> list = new ArrayList<>();
-    private List<Note> tm = new ArrayList<>();
 
-    private boolean addNewElement=false;
-    protected boolean addNewElement2=false;
+    private boolean addNewElement = false;
     private String title;
     private String description;
-    private Button addNoteBtn;
-    private Button deleteAllNoteBtn;
-    private boolean[] checkedState=new boolean[list.size()];
 
-    public MainActivityFragment() {this.addNewElement=false;}
+    public MainActivityFragment() {
+        this.addNewElement = false;
+    }
 
-    public MainActivityFragment(String title, String description){
-        this.title        =title;
-        this.description  =description;
-        this.addNewElement=true;
+    public MainActivityFragment(String title, String description) {
+        this.title = title;
+        this.description = description;
+        this.addNewElement = true;
     }
 
     @Override
@@ -67,21 +61,21 @@ public class MainActivityFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
-        addNoteBtn = view.findViewById(R.id.addNoteBtn);
-        deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
+        Button addNoteBtn = view.findViewById(R.id.addNoteBtn);
+        Button deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
         toDoAdapter = new ToDoAdapter(getContext(), list);
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
-        if(addNewElement){
-            addNewElement=false;
-            list.add(new Note(title,description));
-            recyclerView.scrollToPosition(list.size()-1); //Auto scroll to last item
+        if (addNewElement) {
+            addNewElement = false;
+            list.add(new Note(title, description));
+            recyclerView.scrollToPosition(list.size() - 1);
         }
 
-        if(list.size()!=0){
+        if (list.size() != 0) {
             toDoAdapter.submitList(list);
         }
 
@@ -102,12 +96,6 @@ public class MainActivityFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setRetainInstance(true);
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -121,11 +109,10 @@ public class MainActivityFragment extends Fragment {
 
         recyclerView.setAdapter(null);
 
-        //setRetainInstance(true);
         return rootView;
     }
 
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT| ItemTouchHelper.RIGHT) {
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
             return false;
@@ -135,12 +122,8 @@ public class MainActivityFragment extends Fragment {
         public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
             list.remove(viewHolder.getAdapterPosition());
 
-            //toDoAdapter.submitList(tm);
-            //toDoAdapter.submitList(list);
-            //recyclerView.setAdapter(toDoAdapter);
-
             toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(),1);
+            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(), 1);
         }
     };
 }
