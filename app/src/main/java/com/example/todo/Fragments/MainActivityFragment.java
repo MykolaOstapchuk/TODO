@@ -1,7 +1,9 @@
 package com.example.todo.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,16 @@ import com.example.todo.ToDoAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivityFragment extends Fragment {
+public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNoteListener {
+
+    @Override
+    public void onNoteClick(int position) {
+        addNoteFragment.openNoteFragment(true, list.get(position).getTitle(),list.get(position).getDescription(),position);
+        Log.d("kola","onNoteClick: clicked. " +String.valueOf(position));
+    }
 
     public interface openAddNoteFragment {
-        void openNoteFragment();
+        void openNoteFragment(boolean check , String title, String description, int position);
     }
 
     private openAddNoteFragment addNoteFragment;
@@ -37,6 +45,8 @@ public class MainActivityFragment extends Fragment {
     private boolean addNewElement = false;
     private String title;
     private String description;
+    private int position;
+    private boolean editNote =false;
 
     public MainActivityFragment() {
         this.addNewElement = false;
@@ -46,6 +56,13 @@ public class MainActivityFragment extends Fragment {
         this.title = title;
         this.description = description;
         this.addNewElement = true;
+    }
+
+    public MainActivityFragment(String title, String description,int pos) {
+        this.title = title;
+        this.description = description;
+        this.position = pos;
+        this.editNote = true;
     }
 
     @Override
@@ -64,15 +81,21 @@ public class MainActivityFragment extends Fragment {
         Button addNoteBtn = view.findViewById(R.id.addNoteBtn);
         Button deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
 
-        toDoAdapter = new ToDoAdapter(getContext(), list);
+        toDoAdapter = new ToDoAdapter(getContext(), list,this);
         recyclerView.setAdapter(toDoAdapter);
 
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
+
 
         if (addNewElement) {
             addNewElement = false;
             list.add(new Note(title, description));
             recyclerView.scrollToPosition(list.size() - 1);
+        }
+        else if(editNote) {
+            editNote = false;
+            list.get(position).setTitle(title);
+            list.get(position).setDescription(description);
         }
 
         if (list.size() != 0) {
@@ -82,7 +105,7 @@ public class MainActivityFragment extends Fragment {
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view1) {
-                addNoteFragment.openNoteFragment();
+                addNoteFragment.openNoteFragment(false,"","",0);
             }
         });
 
@@ -93,6 +116,8 @@ public class MainActivityFragment extends Fragment {
                 recyclerView.setAdapter(null);
             }
         });
+
+
         super.onViewCreated(view, savedInstanceState);
     }
 

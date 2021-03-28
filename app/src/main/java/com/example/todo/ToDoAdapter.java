@@ -21,6 +21,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
 
     private static AsyncListDiffer<Note> mDiffer;
     private Context context;
+    private OnNoteListener monNoteListener;
 
     public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
         @Override
@@ -39,8 +40,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         return mDiffer.getCurrentList().size();
     }
 
-    public ToDoAdapter(Context ct, List<Note> ls) {
+    public ToDoAdapter(Context ct, List<Note> ls, OnNoteListener onNoteListener) {
         context = ct;
+        this.monNoteListener = onNoteListener;
         mDiffer = new AsyncListDiffer<Note>(this, DIFF_UTIL);
     }
 
@@ -57,7 +59,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_todo, parent, false);
-        return new MyViewHolder(view);
+        return new MyViewHolder(view,monNoteListener);
     }
 
     @Override
@@ -78,16 +80,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         holder.setData(getItem(position));
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView tekst1;
         private TextView tekst2;
         private CheckBox tempcheck;
+        private OnNoteListener onNoteListener;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, OnNoteListener onNoteListener) {
             super(itemView);
             tekst1 = itemView.findViewById(R.id.noteTitle);
             tekst2 = itemView.findViewById(R.id.noteDescription);
             tempcheck = itemView.findViewById(R.id.checkbox);
+            this.onNoteListener = onNoteListener;
+
+            itemView.setOnClickListener(this);
         }
 
         public void setData(Note note) {
@@ -109,6 +115,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
 
             tempcheck.setChecked(note.isCheckClick());
         }
+
+        @Override
+        public void onClick(View view) {
+            onNoteListener.onNoteClick(getAdapterPosition());
+        }
+    }
+
+    public interface OnNoteListener{
+        void onNoteClick(int position);
     }
 }
 

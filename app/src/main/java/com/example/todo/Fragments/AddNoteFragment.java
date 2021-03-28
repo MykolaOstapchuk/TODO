@@ -19,13 +19,23 @@ public class AddNoteFragment extends Fragment {
 
     public interface noteFragment {
         void addNote(boolean check, String title, String description);
+        void editNote(String title, String description, int position);
     }
 
     private noteFragment noteFragment;
     private EditText title, description;
-    private Button cancel;
+    boolean checkEdit = false;
+    private String a, b ="";
+    private String oldTitle,oldDescription;
+    private int pos;
 
-    public AddNoteFragment() {
+    public AddNoteFragment() { }
+
+    public AddNoteFragment(String a, String b, int pos){
+        this.a = a;
+        this.b = b;
+        this.pos= pos;
+        checkEdit =true;
     }
 
     @Override
@@ -49,7 +59,15 @@ public class AddNoteFragment extends Fragment {
         title = view.findViewById(R.id.titleTxt);
         description = view.findViewById(R.id.descriptionTxt);
         Button confirm = view.findViewById(R.id.confirmBtn);
-        cancel = view.findViewById(R.id.cancelBtn);
+        Button cancel = view.findViewById(R.id.cancelBtn);
+
+        if(checkEdit){
+            oldTitle = title.getText().toString();
+            oldDescription = description.getText().toString();
+
+            title.setText(a);
+            description.setText(b);
+        }
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,8 +86,14 @@ public class AddNoteFragment extends Fragment {
                 } else {
                     if (tit.length() >= 20) {
                         title.setError("The title name should have less than 20 characters");
-                    } else
-                        noteFragment.addNote(true, tit, des);
+                    }
+
+                    else {
+                        if (!checkEdit)
+                            noteFragment.addNote(true, tit, des);
+                        else
+                            noteFragment.editNote(tit, des, pos);
+                    }
                 }
             }
         });
@@ -77,7 +101,10 @@ public class AddNoteFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                noteFragment.addNote(false, "", "");
+                if(!checkEdit)
+                    noteFragment.addNote(false, "", "");
+                else
+                    noteFragment.editNote(oldTitle, oldDescription,-1);
             }
         });
 
