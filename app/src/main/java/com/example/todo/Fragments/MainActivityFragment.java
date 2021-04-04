@@ -2,7 +2,9 @@ package com.example.todo.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,8 +26,12 @@ import com.example.todo.ToDoAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNoteListener {
+
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     public void onNoteClick(int position,boolean choose) {
@@ -50,6 +57,7 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
     private openAddNoteFragment addNoteFragment;
     private RecyclerView recyclerView;
     private ToDoAdapter toDoAdapter;
+    private boolean isNightModeOn=false;
 
     private static List<Note> list = new ArrayList<>();
 
@@ -79,6 +87,10 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        sharedPreferences = context.getSharedPreferences("AppSettingPrefs",0);
+        editor = sharedPreferences.edit();
+        editor.apply();
+        isNightModeOn = sharedPreferences.getBoolean("NightMode",false);
         try {
             addNoteFragment = (openAddNoteFragment) context;
         } catch (ClassCastException ex) {
@@ -91,6 +103,19 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
 
         Button addNoteBtn = view.findViewById(R.id.addNoteBtn);
         Button deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
+
+        if(isNightModeOn){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            //btn.setText("Disable Dark Mode");
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            //btn.setText("Enable Dark Mode");
+        }
+
+//        SharedPreferences sharedPreferences = Objects.requireNonNull(this.getActivity()).getSharedPreferences("AppSettingPrefs",0);
+//        // sharedPreferences= Objects.requireNonNull(getContext()).getSharedPreferences("AppSettingPrefs",0);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//         isNightModeOn = sharedPreferences.getBoolean("NightMode",false);
 
         toDoAdapter = new ToDoAdapter(getContext(), list,this);
         recyclerView.setAdapter(toDoAdapter);
@@ -123,8 +148,23 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         deleteAllNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                list.clear();
-                recyclerView.setAdapter(null);
+                if(isNightModeOn){
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    editor.putBoolean("NightMode",false);
+                    editor.commit();
+                    editor.apply();
+
+                    //btn.setText("Enable Dark Mode");
+                }else{
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    editor.putBoolean("NightMode",true);
+                    editor.commit();
+                    editor.apply();
+                    //btn.setText("Disable Dark Mode");
+                }
+
+                //list.clear();
+                //recyclerView.setAdapter(null);
             }
         });
 
@@ -136,6 +176,8 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+
+
 
         recyclerView = rootView.findViewById(R.id.noteRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

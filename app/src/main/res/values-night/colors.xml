@@ -4,8 +4,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
 
-    <color name="mainText">#2d313d</color>
-    <color name="mainBackground">#ffffff</color>
-    <color name="recyclerBackground">#ffffff</color>
+    <color name="mainText">#ffffff</color>
+    <color name="mainBackground">#2d313d</color>
 
 </resources>
