@@ -27,13 +27,24 @@ import java.util.List;
 public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNoteListener {
 
     @Override
-    public void onNoteClick(int position) {
+    public void onNoteClick(int position,boolean choose) {
+        if(choose){
         addNoteFragment.openNoteFragment(true, list.get(position).getTitle(),list.get(position).getDescription(),position);
         Log.d("kola","onNoteClick: clicked. " +String.valueOf(position));
+        }
+        else
+            deleteElement(position);
     }
 
     public interface openAddNoteFragment {
         void openNoteFragment(boolean check , String title, String description, int position);
+    }
+
+    private void deleteElement(int pos){
+        list.remove(pos);
+
+        toDoAdapter.notifyItemChanged(pos);
+        toDoAdapter.notifyItemRangeRemoved(pos, 1);
     }
 
     private openAddNoteFragment addNoteFragment;
@@ -84,7 +95,7 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         toDoAdapter = new ToDoAdapter(getContext(), list,this);
         recyclerView.setAdapter(toDoAdapter);
 
-        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
+        //new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerView);
 
 
         if (addNewElement) {
@@ -137,18 +148,18 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         return rootView;
     }
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-            list.remove(viewHolder.getAdapterPosition());
-
-            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
-            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(), 1);
-        }
-    };
+//    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//        @Override
+//        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//            return false;
+//        }
+//
+//        @Override
+//        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//            list.remove(viewHolder.getAdapterPosition());
+//
+//            toDoAdapter.notifyItemChanged(viewHolder.getAdapterPosition());
+//            toDoAdapter.notifyItemRangeRemoved(viewHolder.getAdapterPosition(), 1);
+//        }
+//    };
 }
