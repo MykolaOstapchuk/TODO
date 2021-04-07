@@ -67,6 +67,8 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
     private int position;
     private boolean editNote =false;
 
+    private Button deleteAllNoteBtn;
+
     public MainActivityFragment() {
         this.addNewElement = false;
     }
@@ -102,7 +104,7 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         Button addNoteBtn = view.findViewById(R.id.addNoteBtn);
-        Button deleteAllNoteBtn = view.findViewById(R.id.deleteAllNoteBtn);
+
 
         if(isNightModeOn){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -145,6 +147,19 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
             }
         });
 
+
+
+
+        super.onViewCreated(view, savedInstanceState);
+    }
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
+
+        deleteAllNoteBtn = rootView.findViewById(R.id.deleteAllNoteBtn);
         deleteAllNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,14 +167,12 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     editor.putBoolean("NightMode",false);
                     editor.commit();
-                    editor.apply();
 
                     //btn.setText("Enable Dark Mode");
                 }else{
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                     editor.putBoolean("NightMode",true);
                     editor.commit();
-                    editor.apply();
                     //btn.setText("Disable Dark Mode");
                 }
 
@@ -167,17 +180,6 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
                 //recyclerView.setAdapter(null);
             }
         });
-
-
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
-
-
 
         recyclerView = rootView.findViewById(R.id.noteRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

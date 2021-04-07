@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/mainBackground"
     tools:context=".Fragments.AddNoteFragment">
 
     <EditText
         android:id="@+id/titleTxt"
         android:hint="@string/title"
         android:text=""
-        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@color/recTextBackground"
+        android:textColorHint="@color/recTextBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
@@ -21,7 +23,8 @@
         android:layout_below="@+id/titleTxt"
         android:id="@+id/descriptionTxt"
         android:hint="@string/description"
-        android:textColorHint="@android:color/darker_gray"
+        android:textColor="@color/recTextBackground"
+        android:textColorHint="@color/recTextBackground"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         />

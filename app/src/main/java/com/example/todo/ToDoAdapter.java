@@ -67,7 +67,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.test_swipe, parent, false);
+        View view = inflater.inflate(R.layout.item_todo, parent, false);
         return new MyViewHolder(view,monNoteListener);
     }
 
@@ -78,19 +78,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
         viewBinderHelper.closeLayout(String.valueOf(a.get(holder.getAdapterPosition()).title));
 
         //holder.bindData(getItem(position));
-        //        holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                int pos = holder.getAdapterPosition();
-//                if (b) {
-//                    mDiffer.getCurrentList().get(pos).setCheckClick(true);
-//                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-//                } else {
-//                    mDiffer.getCurrentList().get(pos).setCheckClick(false);
-//                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-//                }
-//            }
-//        });
+                holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                int pos = holder.getAdapterPosition();
+                if (b) {
+                    mDiffer.getCurrentList().get(pos).setCheckClick(true);
+                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                } else {
+                    mDiffer.getCurrentList().get(pos).setCheckClick(false);
+                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                }
+            }
+        });
         holder.setData(getItem(position));
     }
 

@@ -16,18 +16,18 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.test);
 
-        if (savedInstanceState == null) {
-
-            cuFragment = new MainActivityFragment();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.fragment_page, cuFragment)
-                    .addToBackStack("MainPageFragment")
-                    .commit();
-
-        }
+//        if (savedInstanceState == null) {
+//
+//            cuFragment = new MainActivityFragment();
+//            getSupportFragmentManager()
+//                    .beginTransaction()
+//                    .add(R.id.fragment_page, cuFragment)
+//                    .addToBackStack("MainPageFragment")
+//                    .commit();
+//
+//        }
     }
 
     @Override
