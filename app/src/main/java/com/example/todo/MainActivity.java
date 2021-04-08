@@ -16,30 +16,30 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test);
+        setContentView(R.layout.activity_main);
 
-//        if (savedInstanceState == null) {
-//
-//            cuFragment = new MainActivityFragment();
-//            getSupportFragmentManager()
-//                    .beginTransaction()
-//                    .add(R.id.fragment_page, cuFragment)
-//                    .addToBackStack("MainPageFragment")
-//                    .commit();
-//
-//        }
+        if (savedInstanceState == null) {
+
+            cuFragment = new MainActivityFragment();
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(R.id.fragment_page, cuFragment)
+                    .addToBackStack("MainPageFragment")
+                    .commit();
+
+        }
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "startFragment", cuFragment);
-    }
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        getSupportFragmentManager().putFragment(outState, "startFragment", cuFragment);
+//    }
 
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        cuFragment = getSupportFragmentManager().getFragment(savedInstanceState, "startFragment");
-    }
+//    @Override
+//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+//        cuFragment = getSupportFragmentManager().getFragment(savedInstanceState, "startFragment");
+//    }
 
     @Override
     public void openNoteFragment(boolean check, String title, String description,int position) {
