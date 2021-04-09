@@ -30,28 +30,35 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, "startFragment", cuFragment);
-    }
+//    @Override
+//    protected void onSaveInstanceState(@NonNull Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//        getSupportFragmentManager().putFragment(outState, "startFragment", cuFragment);
+//    }
+
+//    @Override
+//    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+//        cuFragment = getSupportFragmentManager().getFragment(savedInstanceState, "startFragment");
+//    }
 
     @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        cuFragment = getSupportFragmentManager().getFragment(savedInstanceState, "startFragment");
-    }
-
-    @Override
-    public void openNoteFragment() {
+    public void openNoteFragment(boolean check, String title, String description,int position) {
         getSupportFragmentManager().popBackStack();
 
-        cuFragment = new AddNoteFragment();
+        if (!check) {
+            cuFragment = new AddNoteFragment();
+        } else {
+            cuFragment = new AddNoteFragment(title, description,position);
+        }
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_page, cuFragment)
                 .addToBackStack("AddNoteFragment")
                 .commit();
     }
+
+
 
     @Override
     public void addNote(boolean check, String title, String description) {
@@ -62,6 +69,19 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
         } else {
             cuFragment = new MainActivityFragment(title, description);
         }
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_page, cuFragment)
+                .addToBackStack("MainActivityFragment")
+                .commit();
+    }
+
+    @Override
+    public void editNote(String title, String description,int pos) {
+        getSupportFragmentManager().popBackStack();
+
+        cuFragment = new MainActivityFragment(title, description,pos);
+
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_page, cuFragment)
