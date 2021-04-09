@@ -9,6 +9,6 @@
 <!--        </shape>-->
 <!--    </item>-->
 
-    <item android:drawable="@drawable/deeeeelll"/>
+    <item android:drawable="@drawable/deleteicon"/>
 
 </layer-list>
