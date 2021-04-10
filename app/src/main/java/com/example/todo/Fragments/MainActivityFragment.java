@@ -26,44 +26,18 @@ import java.util.List;
 
 public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNoteListener {
 
-    SharedPreferences sharedPreferences;
-    SharedPreferences.Editor editor;
-
-    @Override
-    public void onNoteClick(int position,boolean choose) {
-        if(choose){
-        addNoteFragment.openNoteFragment(true, list.get(position).getTitle(),list.get(position).getDescription(),position);
-        Log.d("kola","onNoteClick: clicked. " +String.valueOf(position));
-        }
-        else
-            deleteElement(position);
-    }
-
-    public interface openAddNoteFragment {
-        void openNoteFragment(boolean check , String title, String description, int position);
-    }
-
-    private void deleteElement(int pos){
-        list.remove(pos);
-
-        toDoAdapter.notifyItemChanged(pos);
-        toDoAdapter.notifyItemRangeRemoved(pos, 1);
-    }
-
     private openAddNoteFragment addNoteFragment;
     private RecyclerView recyclerView;
     private ToDoAdapter toDoAdapter;
-    private boolean isNightModeOn=false;
-
+    private boolean isNightModeOn = false;
     private static List<Note> list = new ArrayList<>();
-
     private boolean addNewElement = false;
     private String title;
     private String description;
     private int position;
-    private boolean editNote =false;
-
+    private boolean editNote = false;
     private Button darkMode;
+    private SharedPreferences.Editor editor;
 
     public MainActivityFragment() {
         this.addNewElement = false;
@@ -75,20 +49,33 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         this.addNewElement = true;
     }
 
-    public MainActivityFragment(String title, String description,int pos) {
+    public MainActivityFragment(String title, String description, int pos) {
         this.title = title;
         this.description = description;
         this.position = pos;
         this.editNote = true;
     }
 
+    public interface openAddNoteFragment {
+        void openNoteFragment(boolean check, String title, String description, int position);
+    }
+
+    @Override
+    public void onNoteClick(int position, boolean choose) {
+        if (choose) {
+            addNoteFragment.openNoteFragment(true, list.get(position).getTitle(), list.get(position).getDescription(), position);
+            Log.d("kola", "onNoteClick: clicked. " + String.valueOf(position));
+        } else
+            deleteElement(position);
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        sharedPreferences = context.getSharedPreferences("AppSettingPrefs",0);
+        SharedPreferences sharedPreferences = context.getSharedPreferences("AppSettingPrefs", 0);
         editor = sharedPreferences.edit();
         editor.apply();
-        isNightModeOn = sharedPreferences.getBoolean("NightMode",false);
+        isNightModeOn = sharedPreferences.getBoolean("NightMode", false);
         try {
             addNoteFragment = (openAddNoteFragment) context;
         } catch (ClassCastException ex) {
@@ -98,25 +85,22 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-
-
         Button addNoteBtn = view.findViewById(R.id.add_note_button);
 
-        if(isNightModeOn){
+        if (isNightModeOn) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }else {
+        } else {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
 
-        toDoAdapter = new ToDoAdapter(getContext(), list,this);
+        toDoAdapter = new ToDoAdapter(getContext(), list, this);
         recyclerView.setAdapter(toDoAdapter);
 
         if (addNewElement) {
             addNewElement = false;
             list.add(new Note(title, description));
             recyclerView.scrollToPosition(list.size() - 1);
-        }
-        else if(editNote) {
+        } else if (editNote) {
             editNote = false;
             list.get(position).setTitle(title);
             list.get(position).setDescription(description);
@@ -129,21 +113,20 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         addNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view1) {
-                addNoteFragment.openNoteFragment(false,"","",0);
+                addNoteFragment.openNoteFragment(false, "", "", 0);
             }
         });
-
 
         darkMode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isNightModeOn){
+                if (isNightModeOn) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    editor.putBoolean("NightMode",false);
+                    editor.putBoolean("NightMode", false);
                     editor.commit();
-                }else{
+                } else {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    editor.putBoolean("NightMode",true);
+                    editor.putBoolean("NightMode", true);
                     editor.commit();
                 }
             }
@@ -160,8 +143,7 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
 
         Button deleteAllNoteBtn = rootView.findViewById(R.id.delete_notes_button);
-        Button options = rootView.findViewById(R.id.option_button);
-        darkMode         = rootView.findViewById(R.id.dark_mode_button);
+        darkMode = rootView.findViewById(R.id.dark_mode_button);
 
         deleteAllNoteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,5 +160,11 @@ public class MainActivityFragment extends Fragment implements ToDoAdapter.OnNote
         recyclerView.setAdapter(null);
 
         return rootView;
+    }
+
+    private void deleteElement(int pos) {
+        list.remove(pos);
+        toDoAdapter.notifyItemChanged(pos);
+        toDoAdapter.notifyItemRangeRemoved(pos, 1);
     }
 }
