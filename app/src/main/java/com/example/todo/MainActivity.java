@@ -2,7 +2,6 @@ package com.example.todo;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -42,13 +41,13 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
 //    }
 
     @Override
-    public void openNoteFragment(boolean check, String title, String description,int position) {
+    public void openNoteFragment(boolean check, String title, String description, int position) {
         getSupportFragmentManager().popBackStack();
 
         if (!check) {
             cuFragment = new AddNoteFragment();
         } else {
-            cuFragment = new AddNoteFragment(title, description,position);
+            cuFragment = new AddNoteFragment(title, description, position);
         }
 
         getSupportFragmentManager()
@@ -57,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
                 .addToBackStack("AddNoteFragment")
                 .commit();
     }
-
 
 
     @Override
@@ -77,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements MainActivityFragm
     }
 
     @Override
-    public void editNote(String title, String description,int pos) {
+    public void editNote(String title, String description, int pos) {
         getSupportFragmentManager().popBackStack();
 
-        cuFragment = new MainActivityFragment(title, description,pos);
+        cuFragment = new MainActivityFragment(title, description, pos);
 
         getSupportFragmentManager()
                 .beginTransaction()

@@ -8,7 +8,6 @@
 <!--            <corners android:radius="220dp" />-->
 <!--        </shape>-->
 <!--    </item>-->
-
     <item android:drawable="@drawable/darkmode"/>
 
 </layer-list>

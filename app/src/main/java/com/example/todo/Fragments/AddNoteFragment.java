@@ -15,27 +15,33 @@ import androidx.fragment.app.Fragment;
 
 import com.example.todo.R;
 
-public class AddNoteFragment extends Fragment {
+import static com.example.todo.Constants.DESCRIPTION_ERROR;
+import static com.example.todo.Constants.LONG_TITLE_ERROR;
+import static com.example.todo.Constants.TITLE_ERROR;
 
-    public interface noteFragment {
-        void addNote(boolean check, String title, String description);
-        void editNote(String title, String description, int position);
-    }
+public class AddNoteFragment extends Fragment {
 
     private noteFragment noteFragment;
     private EditText title, description;
     boolean checkEdit = false;
-    private String a, b ="";
-    private String oldTitle,oldDescription;
+    private String a, b = "";
+    private String oldTitle, oldDescription;
     private int pos;
 
-    public AddNoteFragment() { }
+    public interface noteFragment {
+        void addNote(boolean check, String title, String description);
 
-    public AddNoteFragment(String a, String b, int pos){
+        void editNote(String title, String description, int position);
+    }
+
+    public AddNoteFragment() {
+    }
+
+    public AddNoteFragment(String a, String b, int pos) {
         this.a = a;
         this.b = b;
-        this.pos= pos;
-        checkEdit =true;
+        this.pos = pos;
+        checkEdit = true;
     }
 
     @Override
@@ -61,7 +67,7 @@ public class AddNoteFragment extends Fragment {
         Button confirm = view.findViewById(R.id.confirmBtn);
         Button cancel = view.findViewById(R.id.cancelBtn);
 
-        if(checkEdit){
+        if (checkEdit) {
             oldTitle = title.getText().toString();
             oldDescription = description.getText().toString();
 
@@ -80,15 +86,13 @@ public class AddNoteFragment extends Fragment {
                 des = des.replace("\n", "").replace("\r", "");
 
                 if (TextUtils.isEmpty(tit)) {
-                    title.setError("The item title cannot be empty");
+                    title.setError(TITLE_ERROR);
                 } else if (TextUtils.isEmpty(des)) {
-                    description.setError("The item description cannot be empty");
+                    description.setError(DESCRIPTION_ERROR);
                 } else {
                     if (tit.length() >= 20) {
-                        title.setError("The title name should have less than 20 characters");
-                    }
-
-                    else {
+                        title.setError(LONG_TITLE_ERROR);
+                    } else {
                         if (!checkEdit)
                             noteFragment.addNote(true, tit, des);
                         else
@@ -101,10 +105,10 @@ public class AddNoteFragment extends Fragment {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!checkEdit)
+                if (!checkEdit)
                     noteFragment.addNote(false, "", "");
                 else
-                    noteFragment.editNote(oldTitle, oldDescription,-1);
+                    noteFragment.editNote(oldTitle, oldDescription, -1);
             }
         });
 

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.AsyncListDiffer;
@@ -26,9 +25,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     private static AsyncListDiffer<Note> mDiffer;
     private Context context;
     private OnNoteListener monNoteListener;
-    private List<Note> a;
-
-    //
+    private List<Note> currentList;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     public final DiffUtil.ItemCallback<Note> DIFF_UTIL = new DiffUtil.ItemCallback<Note>() {
@@ -51,7 +48,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public ToDoAdapter(Context ct, List<Note> ls, OnNoteListener onNoteListener) {
         context = ct;
         this.monNoteListener = onNoteListener;
-        a = ls;
+        currentList = ls;
         mDiffer = new AsyncListDiffer<Note>(this, DIFF_UTIL);
     }
 
@@ -68,26 +65,25 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.item_todo, parent, false);
-        return new MyViewHolder(view,monNoteListener);
+        return new MyViewHolder(view, monNoteListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         viewBinderHelper.setOpenOnlyOne(true);
-        viewBinderHelper.bind(holder.swipeRevealLayout,String.valueOf(a.get(holder.getAdapterPosition()).title));
-        viewBinderHelper.closeLayout(String.valueOf(a.get(holder.getAdapterPosition()).title));
+        viewBinderHelper.bind(holder.swipeRevealLayout, String.valueOf(currentList.get(holder.getAdapterPosition()).title));
+        viewBinderHelper.closeLayout(String.valueOf(currentList.get(holder.getAdapterPosition()).title));
 
-        //holder.bindData(getItem(position));
-                holder.tempcheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 int pos = holder.getAdapterPosition();
                 if (b) {
                     mDiffer.getCurrentList().get(pos).setCheckClick(true);
-                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                    holder.title_text.setPaintFlags(holder.title_text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 } else {
                     mDiffer.getCurrentList().get(pos).setCheckClick(false);
-                    holder.tekst1.setPaintFlags(holder.tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                    holder.title_text.setPaintFlags(holder.title_text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                 }
             }
         });
@@ -95,80 +91,68 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView tekst1;
-        private TextView tekst2;
-        private CheckBox tempcheck;
+        private TextView title_text;
+        private TextView description_text;
+        private CheckBox checkBox;
         private OnNoteListener onNoteListener;
-
-        //
-        private  TextView edit,delete,t;
         private SwipeRevealLayout swipeRevealLayout;
 
         public MyViewHolder(@NonNull View itemView, OnNoteListener onNoteListener) {
             super(itemView);
-            tekst1 = itemView.findViewById(R.id.noteTitle);
-            tekst2 = itemView.findViewById(R.id.noteDescription);
-            tempcheck = itemView.findViewById(R.id.checkbox);
+            title_text = itemView.findViewById(R.id.noteTitle);
+            description_text = itemView.findViewById(R.id.noteDescription);
+            checkBox = itemView.findViewById(R.id.checkbox);
             this.onNoteListener = onNoteListener;
 
-            //
-            edit = itemView.findViewById(R.id.editTextBtn);
-            delete= itemView.findViewById(R.id.deleteTextBtn);
-            //t = itemView.findViewById(R.id.textView);
+            TextView edit = itemView.findViewById(R.id.editTextBtn);
+            TextView delete = itemView.findViewById(R.id.deleteTextBtn);
             swipeRevealLayout = itemView.findViewById(R.id.swipeLayout);
-
 
             edit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    monNoteListener.onNoteClick(getAdapterPosition(),true);
-                    Toast.makeText(context, "Edit is Clicked", Toast.LENGTH_SHORT).show();
+                    monNoteListener.onNoteClick(getAdapterPosition(), true);
                 }
             });
 
             delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    monNoteListener.onNoteClick(getAdapterPosition(),false);
-                    Toast.makeText(context, "Delete is Clicked", Toast.LENGTH_SHORT).show();
+                    monNoteListener.onNoteClick(getAdapterPosition(), false);
                 }
             });
 
             itemView.setOnClickListener(this);
         }
 
-        void bindData(Note note){
-            t.setText(note.getTitle());
-        }
-
         public void setData(Note note) {
             boolean help = note.isCheckClick();
 
-            tekst1.setText(note.getTitle());
+            title_text.setText(note.getTitle());
             if (help) {
-                tekst1.setPaintFlags(tekst1.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                title_text.setPaintFlags(title_text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                tekst1.setPaintFlags(tekst1.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                title_text.setPaintFlags(title_text.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             }
 
             String desc = note.getDescription();
             if (desc.length() >= 40) {
                 String upToNCharacters = desc.substring(0, 40);
-                tekst2.setText(upToNCharacters + " ...");
+                description_text.setText(upToNCharacters + " ...");
             } else
-                tekst2.setText(note.getDescription());
+                description_text.setText(note.getDescription());
 
-            tempcheck.setChecked(note.isCheckClick());
+            checkBox.setChecked(note.isCheckClick());
         }
 
         @Override
         public void onClick(View view) {
-            onNoteListener.onNoteClick(getAdapterPosition(),true);
+            onNoteListener.onNoteClick(getAdapterPosition(), true);
         }
     }
 
-    public interface OnNoteListener{
-        void onNoteClick(int position,boolean choose);
+    public interface OnNoteListener {
+        void onNoteClick(int position, boolean choose);
     }
 }
 
